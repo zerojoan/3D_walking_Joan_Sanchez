@@ -5,6 +5,8 @@ using UnityEngine;
 public class TPSControler : MonoBehaviour
 {
    private CharacterController _controller;
+
+   private Animator _animator;
    private Transform _camera;
 
     private float _horizontal;
@@ -34,9 +36,10 @@ public class TPSControler : MonoBehaviour
     private bool _isGrounded;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         _controller = GetComponent<CharacterController>();
+        _animator = GetComponentInChildren<Animator>();
         _camera = Camera.main.transform;
     }
 
@@ -61,6 +64,9 @@ public class TPSControler : MonoBehaviour
     void Movement()
     {
         Vector3 direction = new Vector3(_horizontal, 0, _vertical);
+       
+        _animator.SetFloat("VelX", 0);
+        _animator.SetFloat("VelZ", direction.magnitude);
 
         if(direction != Vector3. zero)
         {
@@ -80,6 +86,10 @@ public class TPSControler : MonoBehaviour
     void AimMovement()
     {
         Vector3 direction = new Vector3(_horizontal, 0, _vertical);
+
+        _animator.SetFloat("VelX", _horizontal);
+        _animator.SetFloat("VelZ", _vertical);
+
 
          float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + _camera.eulerAngles.y;
          float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, _camera.eulerAngles.y, ref turnSmoothVelocity, turnSmoothTime);
